@@ -109,3 +109,40 @@ while True:
                     Cstep[i.pitch.midi%12]=1
     except StopIteration:
         break
+MM=[]
+mrit=iter(m.flat.notesAndRests)
+fstart=0
+while True:
+    try:
+        note=next(mrit)
+        if (isinstance(note,ms21.note.Note)):
+            f=1
+            id=0
+            for i in MM:
+                if (i[0]==note.pitch.midi):
+                    f=0    
+                    break
+                id+=1
+            if(f):
+                MM.append([note.pitch.midi,[]])
+            if(fstart):
+                MM[pre_id][1].append(id)
+            fstart=1
+            pre_id=id        
+        if(isinstance(note,ms21.chord.Chord)):
+            for thisnote in note.notes:
+                f=1
+                id=0
+                for i in MM:
+                    if (i[0]==thisnote.pitch.midi):
+                        f=0    
+                        break
+                    id+=1
+                if(f):
+                    MM.append([thisnote.pitch.midi,[]])
+                if(fstart):
+                    MM[pre_id][1].append(id)
+                fstart=1
+                pre_id=id 
+    except StopIteration:
+        break
