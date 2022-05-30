@@ -3,6 +3,7 @@
 import random
 import numpy as py
 import  music21 as ms21
+from torch import rand
 c=ms21.converter.parse('稻妻-褪淡的余忆_chord.mid')
 m=ms21.converter.parse('稻妻-褪淡的余忆_medoly.mid')
 # 获取持续的时间每个音符
@@ -148,20 +149,30 @@ while True:
     except StopIteration:
         break
 cstream=ms21.stream.Stream()
+mstream=ms21.stream.Stream()
 id=0
 t=0
-while(len(R[id][2])!=0):
+while(1):
     for i in range(len(R[id][0][0])):
-        newnote=ms21.note.Note()
+        c_newnote=ms21.note.Note()
         if(R[id][0][1][i]==3.75):
-            newnote.duration.quarterLength=4
+            c_newnote.duration.quarterLength=4
         elif(R[id][0][1][i]==2.75):
-            newnote.duration.quarterLength=3
+            c_newnote.duration.quarterLength=3
         else:
-            newnote.duration.quarterLength=R[id][0][1][i]
-        cstream.insert(t+R[id][0][0][i],newnote)
+            c_newnote.duration.quarterLength=R[id][0][1][i]
+        cstream.insert(t+R[id][0][0][i],c_newnote)
+    j=random.randint(0,len(R[id][1])-1)
+    for i in range(len(R[id][1][j][0])):
+        m_newnote=ms21.note.Note()
+        m_newnote.duration.quarterLength=R[id][1][j][1][i]
+        mstream.insert(t+R[id][1][j][0][i],m_newnote)
     i=random.randint(0,len(R[id][3])-1)
     t+=R[id][3][i]
-    i=random.randint(0,len(R[id][2])-1)
-    id=R[id][2][i]
+    if(len(R[id][2])!=0):
+        i=random.randint(0,len(R[id][2])-1)
+        id=R[id][2][i]
+    else:
+        break
 cstream.show()
+mstream.show()
