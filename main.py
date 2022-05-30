@@ -153,7 +153,12 @@ t=0
 while(len(R[id][2])!=0):
     for i in range(len(R[id][0][0])):
         newnote=ms21.note.Note()
-        newnote.duration.quarterLength=R[id][0][1][i]
+        if(R[id][0][1][i]==3.75):
+            newnote.duration.quarterLength=4
+        elif(R[id][0][1][i]==2.75):
+            newnote.duration.quarterLength=3
+        else:
+            newnote.duration.quarterLength=R[id][0][1][i]
         cstream.insert(t+R[id][0][0][i],newnote)
     i=random.randint(0,len(R[id][3])-1)
     t+=R[id][3][i]
