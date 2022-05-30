@@ -9,7 +9,7 @@ mrit=iter(m.flat.notesAndRests)
 R=[]
 #R的一个元素为[[CR],[MR],[nextid]]
 t=0
-preid=0
+pre_id=0
 fstart=0#判定是否为曲头
 CR=[[],[]]
 #CR=[[offset],[duration]]
@@ -22,7 +22,7 @@ while True:
                 MR=[[],[]]
                 while(1):
                     if (isinstance(m_note,ms21.note.Note) or isinstance(m_note,ms21.chord.Chord)):
-                        if(m_note.offset>=note.offset-note.offset%2):
+                        if(m_note.offset>=note.offset-note.offset%2):#对应chord分段
                             break
                         MR[0].append(m_note.offset-t)
                         MR[1].append(m_note.duration.quarterLength)
@@ -39,12 +39,52 @@ while True:
                 if(f):
                     R.append([CR,[MR],[]])
                 if(fstart):
-                    R[preid][2].append(id)
+                    R[pre_id][2].append(id)
                 fstart=1
-                preid=id
+                pre_id=id
                 CR=[[],[]]
             CR[0].append(note.offset-t)
             CR[1].append(note.duration.quarterLength)
+    except StopIteration:
+        break
+crit=iter(c.flat.notesAndRests)
+mrit=iter(m.flat.notesAndRests)
+#初始化迭代器
+C=[]
+t=0
+pre_id=0
+fstart=0
+Cpitch=[]
+m_note=next(mrit)
+while True:
+    try:
+        note=next(crit)
+        if (isinstance(note,ms21.note.Note) or isinstance(note,ms21.chord.Chord)):
+            if(note.offset>=t+2):
+                M=[]
+                while(1):
+                    if (isinstance(m_note,ms21.note.Note) or isinstance(m_note,ms21.chord.Chord)):
+                        if(m_note.offset>=note.offset-note.offset%2):#对应chord分段
+                            break
+                        M.append(m_note.pitch.midi)
+                    m_note=next(mrit)
+                t=note.offset-note.offset%2
+                f=1
+                id=0
+                for se in C:
+                    if (se[0]==Cpitch):
+                        f=0
+                        se[1].extend(M)
+                        break
+                    id+=1
+                if(f):
+                    C.append([Cpitch,M,[]])
+                if(fstart):
+                    C[pre_id][2].append(id)
+                fstart=1
+                pre_id=id
+                Cpitch=[]
+            Cpitch.append(note.pitch.midi)
     except StopIteration:
         break
 
