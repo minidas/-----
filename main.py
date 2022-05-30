@@ -2,11 +2,26 @@
 # -*- coding: UTF-8 -*-
 import random
 import numpy as py
-import  music21 as ms21
-from torch import rand
+import music21 as ms21
+#从本地获取midi流并转调
 c=ms21.converter.parse('稻妻-褪淡的余忆_chord.mid')
+ky=c.analyze('key')
+print(ky)
+if ky.mode == 'minor':
+    i = ms21.interval.Interval(ky.parallel.tonic, ms21.pitch.Pitch('C'))
+else:
+    i = ms21.interval.Interval(ky.tonic, ms21.pitch.Pitch('C'))
+c=c.transpose(i)
+
 m=ms21.converter.parse('稻妻-褪淡的余忆_medoly.mid')
-# 获取持续的时间每个音符
+ky=m.analyze('key')
+print(ky)
+if ky.mode == 'minor':
+    i = ms21.interval.Interval(ky.parallel.tonic, ms21.pitch.Pitch('C'))
+else:
+    i = ms21.interval.Interval(ky.tonic, ms21.pitch.Pitch('C'))
+m=m.transpose(i)
+
 crit=iter(c.flat.notesAndRests)
 mrit=iter(m.flat.notesAndRests)
 R=[]
@@ -150,28 +165,28 @@ while True:
         break
 cstream=ms21.stream.Stream()
 mstream=ms21.stream.Stream()
-id=0
+rid=0
 t=0
 while(1):
-    for i in range(len(R[id][0][0])):
+    for i in range(len(R[rid][0][0])):
         c_newnote=ms21.note.Note()
-        if(R[id][0][1][i]==3.75):
+        if(R[rid][0][1][i]==3.75):
             c_newnote.duration.quarterLength=4
-        elif(R[id][0][1][i]==2.75):
+        elif(R[rid][0][1][i]==2.75):
             c_newnote.duration.quarterLength=3
         else:
-            c_newnote.duration.quarterLength=R[id][0][1][i]
-        cstream.insert(t+R[id][0][0][i],c_newnote)
-    j=random.randint(0,len(R[id][1])-1)
-    for i in range(len(R[id][1][j][0])):
+            c_newnote.duration.quarterLength=R[rid][0][1][i]
+        cstream.insert(t+R[rid][0][0][i],c_newnote)
+    j=random.randint(0,len(R[rid][1])-1)
+    for i in range(len(R[rid][1][j][0])):
         m_newnote=ms21.note.Note()
-        m_newnote.duration.quarterLength=R[id][1][j][1][i]
-        mstream.insert(t+R[id][1][j][0][i],m_newnote)
-    i=random.randint(0,len(R[id][3])-1)
-    t+=R[id][3][i]
-    if(len(R[id][2])!=0):
-        i=random.randint(0,len(R[id][2])-1)
-        id=R[id][2][i]
+        m_newnote.duration.quarterLength=R[rid][1][j][1][i]
+        mstream.insert(t+R[rid][1][j][0][i],m_newnote)
+    i=random.randint(0,len(R[rid][3])-1)
+    t+=R[rid][3][i]
+    if(len(R[rid][2])!=0):
+        i=random.randint(0,len(R[rid][2])-1)
+        rid=R[rid][2][i]
     else:
         break
 cstream.show()
