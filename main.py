@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+import random
 import numpy as py
 import  music21 as ms21
 c=ms21.converter.parse('稻妻-褪淡的余忆_chord.mid')
@@ -146,3 +147,16 @@ while True:
                 pre_id=id 
     except StopIteration:
         break
+cstream=ms21.stream.Stream()
+id=0
+t=0
+while(len(R[id][2])!=0):
+    for i in range(len(R[id][0][0])):
+        newnote=ms21.note.Note()
+        newnote.duration.quarterLength=R[id][0][1][i]
+        cstream.insert(t+R[id][0][0][i],newnote)
+    i=random.randint(0,len(R[id][3])-1)
+    t+=R[id][3][i]
+    i=random.randint(0,len(R[id][2])-1)
+    id=R[id][2][i]
+cstream.show()
