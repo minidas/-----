@@ -6,9 +6,12 @@ r=ms21.converter.parse('稻妻-褪淡的余忆_medoly.mid')
 # 获取持续的时间每个音符
 crit=iter(c.flat.notesAndRests)
 R=[]
+#R的一个元素为[[CR],[MR],[nextid]]
 t=0
-id=0
+preid=0
+fstart=0#判定是否为曲头
 CR=[[],[]]
+#CR=[[offset],[duration]]
 while True:
     try:
         note=next(crit)
@@ -16,24 +19,24 @@ while True:
             if(note.offset>=t+2):
                 t=note.offset-note.offset%2
                 f=1
+                id=0
                 for se in R:
-                    if (se[0]==CR):f=0
+                    if (se[0]==CR):
+                        f=0
+                        break
+                    id+=1
                 if(f):
-                    R.append([CR])
+                    R.append([CR,[],[]])
+                    
+                if(fstart):
+                    R[preid][2].append(id)
+                fstart=1
+                preid=id
                 CR=[[],[]]
             CR[0].append(note.offset-t)
             CR[1].append(note.duration.quarterLength)
     except StopIteration:
         break
-if isinstance(note, ms21.note.Rest):
-    print(note.offset,note.name,note.duration.quarterLength)
 
-elif isinstance(note,ms21.note.Note):
-    print(note.offset,note.name,note.octave,note.pitch,note.pitch.midi,note.duration.quarterLength)
-    # 取和弦
-else:
-    for c_note in note.notes:
-        print(c_note.name,c_note.pitch.midi)
-    print(note.offset,note.duration.quarterLength)
 
 
