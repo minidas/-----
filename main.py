@@ -167,6 +167,7 @@ while True:
 cstream=ms21.stream.Stream()
 mstream=ms21.stream.Stream()
 rid=0
+mid=0
 cid=0
 t=0
 while(1):
@@ -182,20 +183,10 @@ while(1):
     for i in range(max(len(R[rid][0][0]),len(lst_Cstep))):
         c_newnote=ms21.note.Note()
         if(i<len(R[rid][0][0])):
-            if(R[rid][0][1][i]==3.75):
-                c_newnote.duration.quarterLength=4
-            elif(R[rid][0][1][i]==2.75):
-                c_newnote.duration.quarterLength=3
-            else:
-                c_newnote.duration.quarterLength=R[rid][0][1][i]
+            c_newnote.duration.quarterLength=R[rid][0][1][i]
         else:
             k=random.randint(0,len(R[rid][0][0])-1)
-            if(R[rid][0][1][k]==3.75):
-                c_newnote.duration.quarterLength=4
-            elif(R[rid][0][1][k]==2.75):
-                c_newnote.duration.quarterLength=3
-            else:
-                c_newnote.duration.quarterLength=R[rid][0][1][k]
+            c_newnote.duration.quarterLength=R[rid][0][1][k]
         c_newnote.pitch.midi=12*(floor(3.2+random.random()))+lst_Cstep[i%len(lst_Cstep)]
         if(i<len(R[rid][0][0])):
             cstream.insert(t+R[rid][0][0][i],c_newnote)
@@ -205,12 +196,13 @@ while(1):
     for i in range(len(R[rid][1][j][0])):
         m_newnote=ms21.note.Note()
         m_newnote.duration.quarterLength=R[rid][1][j][1][i]
+        m_newnote.pitch.midi=MM[mid][0]
+        mid=random.choice(MM[mid][1])
         mstream.insert(t+R[rid][1][j][0][i],m_newnote)
     i=random.randint(0,len(R[rid][3])-1)
     t+=R[rid][3][i]
     if(len(R[rid][2])!=0):
-        i=random.randint(0,len(R[rid][2])-1)
-        rid=R[rid][2][i]
+        rid=random.choice(R[rid][2])
     else:
         break
     if(len(C[cid][2])!=0):
@@ -234,3 +226,4 @@ while True:
     except StopIteration:
         break
 cstream.show()
+mstream.show()
