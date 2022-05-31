@@ -226,6 +226,6 @@ while True:
     except StopIteration:
         break
 s = ms21.stream.Score(id='mainScore')
-s.insert(0,cstream)
 s.insert(0,mstream)
+s.insert(0,cstream)
 s.show()
