@@ -26,7 +26,7 @@ m=m.transpose(i)
 crit=iter(c.flat.notesAndRests)
 mrit=iter(m.flat.notesAndRests)
 R=[]
-#R的一个元素为[[CR],[MR],[nextid]]
+#R的一个元素为[[CR],[MR],[nextid],[interval]]
 t=0
 pre_id=0
 fstart=0#判定是否为曲头
@@ -76,7 +76,7 @@ while True:
 crit=iter(c.flat.notesAndRests)
 mrit=iter(m.flat.notesAndRests)
 #初始化迭代器
-C=[]
+C=[]#[[step],[M],[nextid]]
 t=0
 pre_id=0
 fstart=0
