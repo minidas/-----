@@ -196,7 +196,7 @@ while(1):
                 c_newnote.duration.quarterLength=3
             else:
                 c_newnote.duration.quarterLength=R[rid][0][1][k]
-        c_newnote.pitch.midi=12*floor(3.2+random.random())+lst_Cstep[i%len(lst_Cstep)]
+        c_newnote.pitch.midi=12*(floor(3.2+random.random()))+lst_Cstep[i%len(lst_Cstep)]
         if(i<len(R[rid][0][0])):
             cstream.insert(t+R[rid][0][0][i],c_newnote)
         else:
@@ -217,5 +217,20 @@ while(1):
         cid=random.choice(C[cid][2])
     else:
         cid=random.randint(0,len(C)-1)
+resit=iter(cstream.flat.notesAndRests)
+t=0
+pitch_temp=[]
+while True:
+    try:
+        note=next(resit)
+        if (isinstance(note,ms21.note.Note)):
+            if(note.offset!=t):
+                t=note.offset
+                pitch_temp=[]
+            for thispitch in pitch_temp:
+                if(note.pitch.midi==thispitch):
+                    note.pitch.midi+=12
+            pitch_temp.append(note.pitch.midi)
+    except StopIteration:
+        break
 cstream.show()
-mstream.show()
