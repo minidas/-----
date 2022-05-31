@@ -179,13 +179,15 @@ while True:
                     if (se[0]==CR):
                         f=0
                         se[1].append(MR)
+                        R[pre_id][2][len(R[pre_id][2])-1]=id
+                        se[2].append(-1)
                         se[3].append(temp)
                         break
                     id+=1
                 if(f):
-                    R.append([CR,[MR],[],[temp]])
-                if(fstart):
-                    R[pre_id][2].append(id)
+                    R.append([CR,[MR],[-1],[temp]])
+                if(fstart and f):
+                    R[pre_id][2][len(R[pre_id][2])-1]=id
                 fstart=1
                 pre_id=id
                 CR=[[],[]]
@@ -197,6 +199,8 @@ while True:
                     CR[0].append(note.offset-t)
                     CR[1].append(note.duration.quarterLength)
     except StopIteration:
+        t=0
+        CR=[[],[]]
         if(sc_num<6):sc_num+=1
         else:break
 crit=[]
@@ -339,10 +343,11 @@ while(1):
         else:
             mid=random.randint(0,len(MM)-1)
         mstream.insert(t+R[rid][1][j][0][i],m_newnote)
-    i=random.randint(0,len(R[rid][3])-1)
-    t+=R[rid][3][i]
+    t+=R[rid][3][j]
     if(len(R[rid][2])!=0):
-        rid=random.choice(R[rid][2])
+        rid=R[rid][2][j]
+        if(rid==-1):
+            break
     else:
         break
     if(len(C[cid][2])!=0):
