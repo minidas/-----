@@ -261,6 +261,8 @@ while True:
                 for i in note.notes:
                     Cstep[i.pitch.midi%12]=1
     except StopIteration:
+        t=0
+        Cstep=py.linspace(0,0,12)
         if(sc_num<6):sc_num+=1
         else:break
 MM=[]
@@ -302,6 +304,7 @@ while True:
                 fstart=1
                 pre_id=id 
     except StopIteration:
+        t=0
         if(sc_num<7):sc_num+=1
         else:break
 cstream=ms21.stream.Part()
@@ -310,7 +313,7 @@ rid=0
 mid=0
 cid=0
 t=0
-while(1):
+for iii in range(200):
     lst_Cstep=[]
     cstep=11
     bi_Cstep=C[cid][0]
