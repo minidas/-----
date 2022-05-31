@@ -3,6 +3,7 @@
 import random
 import numpy as py
 import music21 as ms21
+from math import *
 #从本地获取midi流并转调
 c=ms21.converter.parse('稻妻-褪淡的余忆_chord.mid')
 ky=c.analyze('key')
@@ -166,17 +167,40 @@ while True:
 cstream=ms21.stream.Stream()
 mstream=ms21.stream.Stream()
 rid=0
+cid=0
 t=0
 while(1):
-    for i in range(len(R[rid][0][0])):
+    lst_Cstep=[]
+    cstep=11
+    bi_Cstep=C[cid][0]
+    for i in range(12):
+        if(bi_Cstep&1):
+            lst_Cstep.append(cstep)
+        bi_Cstep>>=1
+        cstep-=1
+    random.shuffle(lst_Cstep)
+    for i in range(max(len(R[rid][0][0]),len(lst_Cstep))):
         c_newnote=ms21.note.Note()
-        if(R[rid][0][1][i]==3.75):
-            c_newnote.duration.quarterLength=4
-        elif(R[rid][0][1][i]==2.75):
-            c_newnote.duration.quarterLength=3
+        if(i<len(R[rid][0][0])):
+            if(R[rid][0][1][i]==3.75):
+                c_newnote.duration.quarterLength=4
+            elif(R[rid][0][1][i]==2.75):
+                c_newnote.duration.quarterLength=3
+            else:
+                c_newnote.duration.quarterLength=R[rid][0][1][i]
         else:
-            c_newnote.duration.quarterLength=R[rid][0][1][i]
-        cstream.insert(t+R[rid][0][0][i],c_newnote)
+            k=random.randint(0,len(R[rid][0][0])-1)
+            if(R[rid][0][1][k]==3.75):
+                c_newnote.duration.quarterLength=4
+            elif(R[rid][0][1][k]==2.75):
+                c_newnote.duration.quarterLength=3
+            else:
+                c_newnote.duration.quarterLength=R[rid][0][1][k]
+        c_newnote.pitch.midi=12*floor(3.2+random.random())+lst_Cstep[i%len(lst_Cstep)]
+        if(i<len(R[rid][0][0])):
+            cstream.insert(t+R[rid][0][0][i],c_newnote)
+        else:
+            cstream.insert(t+R[rid][0][0][k],c_newnote)
     j=random.randint(0,len(R[rid][1])-1)
     for i in range(len(R[rid][1][j][0])):
         m_newnote=ms21.note.Note()
@@ -189,5 +213,9 @@ while(1):
         rid=R[rid][2][i]
     else:
         break
+    if(len(C[cid][2])!=0):
+        cid=random.choice(C[cid][2])
+    else:
+        cid=random.randint(0,len(C)-1)
 cstream.show()
 mstream.show()
