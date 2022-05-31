@@ -164,8 +164,8 @@ while True:
                 pre_id=id 
     except StopIteration:
         break
-cstream=ms21.stream.Stream()
-mstream=ms21.stream.Stream()
+cstream=ms21.stream.Part()
+mstream=ms21.stream.Part()
 rid=0
 mid=0
 cid=0
@@ -225,5 +225,7 @@ while True:
             pitch_temp.append(note.pitch.midi)
     except StopIteration:
         break
-cstream.show()
-mstream.show()
+s = ms21.stream.Score(id='mainScore')
+s.insert(0,cstream)
+s.insert(0,mstream)
+s.show()
