@@ -373,6 +373,17 @@ while True:
             pitch_temp.append(note.pitch.midi)
     except StopIteration:
         break
+mlen=len(mstream)
+clen=len(cstream)
+m_long=mstream[mlen-1].offset+mstream[mlen-1].duration.quarterLength
+c_long=cstream[clen-1].offset+cstream[clen-1].duration.quarterLength
+newrest=ms21.note.Rest()
+if(m_long>c_long):
+    newrest.duration.quarterLength(m_long-c_long)
+    cstream.append(newrest)
+if(m_long<c_long):
+    newrest.duration.quarterLength(c_long-m_long)
+    mstream.append(newrest)
 s = ms21.stream.Score(id='mainScore')
 s.insert(0,mstream)
 s.insert(0,cstream)
